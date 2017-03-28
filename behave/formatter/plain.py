@@ -25,6 +25,7 @@ class PlainFormatter(Formatter):
     SHOW_TAGS = False
     SHOW_ALIGNED_KEYWORDS = False
     DEFAULT_INDENT_SIZE = 2
+    RAISE_OUTPUT_ERRORS = True
 
     def __init__(self, stream_opener, config, **kwargs):
         super(PlainFormatter, self).__init__(stream_opener, config)
@@ -101,14 +102,30 @@ class PlainFormatter(Formatter):
         if self.show_timings:
             status_text += " in %0.3fs" % step.duration
 
+        unicode_errors = 0
         if result.error_message:
-            self.stream.write(u"%s\n%s\n" % (status_text, result.error_message))
+            try:
+                self.stream.write(u"%s\n%s\n" % (status_text, result.error_message))
+            except UnicodeError as e:
+                unicode_errors += 1
+                self.stream.write(u"%s\n" % status_text)
+                self.stream.write(u"%s while writing error message: %s\n" % \
+                                  (e.__class__.__name__, e))
+                if self.RAISE_OUTPUT_ERRORS:
+                    raise
         else:
             self.stream.write(u"%s\n" % status_text)
 
         if self.show_multiline:
             if step.text:
-                self.doc_string(step.text)
+                try:
+                    self.doc_string(step.text)
+                except UnicodeError as e:
+                    unicode_errors += 1
+                    self.stream.write(u"%s while writing docstring: %s\n" % \
+                                      (e.__class__.__name__, e))
+                    if self.RAISE_OUTPUT_ERRORS:
+                        raise
             if step.table:
                 self.table(step.table)
 
