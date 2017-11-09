@@ -10,6 +10,7 @@ GOALS:
 
 DOCUMENTATION:
 
+  * pull  #603: Update typo tutorial.rst (provided by: fnaval)
   * pull  #580: Fix some dead ecosystem links (provided by: smadness)
   * pull  #579: Add explanation for step_impl function name (provided by: bittner)
   * issue #574: flake8 reports F811 redefinition of unused 'step_impl' (fixed by #579).
@@ -81,6 +82,7 @@ CHANGES:
 
 FIXED:
 
+  * issue #606: Using name option w/ special unicode chars (submitted by: alluir42)
   * issue #547: Crash when using step definition with optional cfparse parts (provided by: ftartaggia, jenisys)
   * pull  #599: Steps from another Windows drive (provided by: psicopep)
   * issue #582: behave emitting PendingDeprecationWarning messages (submitted by: adamjcooper)
